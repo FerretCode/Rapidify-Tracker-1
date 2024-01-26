@@ -1,5 +1,6 @@
 <script>
 	import { page } from '$app/stores';
+	import logo from '../assets/images/logo/logo.png';
 	import StatisticsIcon from '../assets/icons/navbar-icon/StatisticsIcon.svelte';
 	import InventoryIcon from '../assets/icons/navbar-icon/InventoryIcon.svelte';
 	import ExpensesIcon from '../assets/icons/navbar-icon/ExpensesIcon.svelte';
@@ -45,13 +46,24 @@
 			icon: SettingsIcon
 		},
 	];
+
+	let sidebar;
+
+	const handleMenuHideOnClick = ()=>{
+		sidebar.classList.remove('show')
+	}
 </script>
 <!-- <a href="/sverdle" aria-current={$page.url.pathname.startsWith('/sverdle') ? 'page' : undefined}>Sverdle</a> -->
 
-<aside class="sidebar">
+<aside class="sidebar" bind:this={sidebar}>
+	<div class="sidebar__header">
+		<a href="/" class="sidebar__logo" on:click={handleMenuHideOnClick}>
+			<img src={logo} alt="logo">
+		</a>
+	</div>
 	<nav class="sidebar__nav">
 		{#each sidebarMenues as menue }
-			<a href={menue.path} class="nav__link" aria-current={$page.url.pathname === menue.path ? 'page' : undefined}>
+			<a href={menue.path} class="nav__link" aria-current={$page.url.pathname === menue.path ? 'page' : undefined} on:click={handleMenuHideOnClick}>
 				<span class="nav__link__icon">
 					<svelte:component this={menue.icon} />
 				</span>
@@ -62,19 +74,34 @@
 </aside>
 
 <style>
+	:global(:root) {
+		--sidebar-width: 277px;
+	}
+
 	.sidebar{
+		--_gap: 40px;
 		position: fixed;
 		top: 0;
 		left: 0;
 		bottom: 0;
-		background-color: #000000;
 		padding: 50px;
+		transition: transform 0.25s ease-in-out;
+	}
+
+	.sidebar__header{
+		text-align: center;
+		margin-bottom: var(--_gap);
+	}
+
+	.sidebar__logo{
+		display: inline-block;
+		padding: 2px;
 	}
 
 	.sidebar__nav{
 		display: flex;
 		flex-direction: column;
-		gap: 40px;
+		gap: var(--_gap);
 	}
 
 	.nav__link{
@@ -108,5 +135,18 @@
 	.nav__link__text{
 		font-size: 15px;
 		font-weight: 600;
+	}
+
+	@media (max-width: 991.98px){
+		:global(:root) {
+			--sidebar-width: 0;
+		}
+		.sidebar{
+			--_gap: 20px;
+			background-color: #000000;
+		}
+		.sidebar:not(.show){
+			transform: translateX(-100%);
+		}
 	}
 </style>

@@ -3,8 +3,21 @@
 :root {
 	--color-primary: #E60000;
 	--color-text: #ffffff;
+	--color-border: #EFEEEB;
 
 	--font-primary: 'Montserrat Variable', sans-serif;
+}
+
+@media (min-width: 668px){
+	:root{
+		--container-inline-padding: 20px;
+	}
+}
+
+@media (min-width: 1200px){
+	:root{
+		--container-inline-padding: 40px;
+	}
 }
 
 /* Reset CSS */
@@ -40,6 +53,7 @@ body
 
 body{
     color: var(--color-text);
+	font-size: 1rem;
     font-family: var(--font-primary);
 	font-weight: 400;
 	font-display: optional;
@@ -63,4 +77,8 @@ button
 	color: inherit;
 	font-family: inherit;
 	outline: none;
+}
+
+button:not(:disabled){
+	cursor: pointer;
 }

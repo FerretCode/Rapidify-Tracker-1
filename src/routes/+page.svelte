@@ -7,7 +7,9 @@
 </svelte:head>
 
 <section>
-	<h1>Statistics Page</h1>
+	<div class="container-fluid">
+		<h1>Statistics Page</h1>
+	</div>
 </section>
 
 <style>
