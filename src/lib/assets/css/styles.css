@@ -3,6 +3,7 @@
 :root {
 	--color-primary: #E60000;
 	--color-text: #ffffff;
+	--color-text-muted: #777777;
 	--color-border: #EFEEEB;
 
 	--font-primary: 'Montserrat Variable', sans-serif;
@@ -81,4 +82,52 @@ button
 
 button:not(:disabled){
 	cursor: pointer;
+}
+
+.w-100{
+	width: 100%;
+}
+
+.text-center{
+	text-align: center;
+}
+
+.btn{
+	display: inline-block;
+	text-align: center;
+	font-size: 21px;
+	font-weight: 600;
+	padding: 19px 22px;
+	border-radius: 12px;
+	border: 0;
+}
+
+.btn--primary{
+	background-color: var(--color-primary);
+}
+
+.btn-close{
+	--_size: 30px;
+	width: var(--_size);
+	height: var(--_size);
+	font-size: calc(var(--_size) / 2);
+	border-radius: 50rem;
+	color: #ffffff;
+	background-color: var(--color-primary);
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	border: 0;
+}
+
+@media (min-width: 768px) {
+	.btn-close{
+		--_size: 40px;
+	}
+}
+
+@media (max-width: 991.98px){
+	.sidebar.show{
+		box-shadow: 0 0 0 100vw rgba(0,0,0,0.75);
+	}
 }

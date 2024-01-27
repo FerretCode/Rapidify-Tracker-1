@@ -1,8 +1,8 @@
 <script>
     import { onMount } from 'svelte';
-    import BellIcon from '../assets/icons/navbar-icon/BellIcon.svelte';
-    import MenuIcon from '../assets/icons/navbar-icon/MenuIcon.svelte';
-    import userAvatar from '../assets/images/users/user.png';
+    import BellIcon from '$lib/assets/icons/navbar-icon/BellIcon.svelte';
+    import MenuIcon from '$lib/assets/icons/navbar-icon/MenuIcon.svelte';
+    import userAvatar from '$lib/assets/images/users/user.png';
 
     let menuToggler;
     onMount(() => {

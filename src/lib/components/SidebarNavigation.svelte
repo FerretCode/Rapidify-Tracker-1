@@ -1,13 +1,14 @@
 <script>
 	import { page } from '$app/stores';
-	import logo from '../assets/images/logo/logo.png';
-	import StatisticsIcon from '../assets/icons/navbar-icon/StatisticsIcon.svelte';
-	import InventoryIcon from '../assets/icons/navbar-icon/InventoryIcon.svelte';
-	import ExpensesIcon from '../assets/icons/navbar-icon/ExpensesIcon.svelte';
-	import SalesIcon from '../assets/icons/navbar-icon/SalesIcon.svelte';
-	import ToolsIcon from '../assets/icons/navbar-icon/ToolsIcon.svelte';
-	import MarketIcon from '../assets/icons/navbar-icon/MarketIcon.svelte';
-	import SettingsIcon from '../assets/icons/navbar-icon/SettingsIcon.svelte';
+	import logo from '$lib/assets/images/logo/logo.png';
+	import CloseIcon from '$lib/assets/icons/CloseIcon.svelte';
+	import StatisticsIcon from '$lib/assets/icons/navbar-icon/StatisticsIcon.svelte';
+	import InventoryIcon from '$lib/assets/icons/navbar-icon/InventoryIcon.svelte';
+	import ExpensesIcon from '$lib/assets/icons/navbar-icon/ExpensesIcon.svelte';
+	import SalesIcon from '$lib/assets/icons/navbar-icon/SalesIcon.svelte';
+	import ToolsIcon from '$lib/assets/icons/navbar-icon/ToolsIcon.svelte';
+	import MarketIcon from '$lib/assets/icons/navbar-icon/MarketIcon.svelte';
+	import SettingsIcon from '$lib/assets/icons/navbar-icon/SettingsIcon.svelte';
 
 	const sidebarMenues = [
 		{
@@ -57,6 +58,9 @@
 
 <aside class="sidebar" bind:this={sidebar}>
 	<div class="sidebar__header">
+		<button type="button" class="btn-close" on:click={handleMenuHideOnClick}>
+			<svelte:component this={CloseIcon} />
+		</button>
 		<a href="/" class="sidebar__logo" on:click={handleMenuHideOnClick}>
 			<img src={logo} alt="logo">
 		</a>
@@ -85,12 +89,22 @@
 		left: 0;
 		bottom: 0;
 		padding: 50px;
-		transition: transform 0.25s ease-in-out;
+		transition:
+			box-shadow 0.25s linear,
+			transform 0.25s ease-in-out;
+		z-index: 999;
 	}
 
 	.sidebar__header{
 		text-align: center;
 		margin-bottom: var(--_gap);
+		z-index: 1;
+	}
+
+	.sidebar__header .btn-close{
+		position: absolute;
+		top: 15px;
+		right: 15px;
 	}
 
 	.sidebar__logo{
@@ -127,7 +141,6 @@
 		border-color: #EFEEEB;
 	}
 	
-
 	.nav__link__icon{
 		font-size: 22px;
 	}
@@ -141,12 +154,20 @@
 		:global(:root) {
 			--sidebar-width: 0;
 		}
+
 		.sidebar{
 			--_gap: 20px;
 			background-color: #000000;
 		}
+
 		.sidebar:not(.show){
 			transform: translateX(-100%);
+		}
+	}
+
+	@media (min-width: 992px){
+		.sidebar__header .btn-close{
+			display: none;
 		}
 	}
 </style>

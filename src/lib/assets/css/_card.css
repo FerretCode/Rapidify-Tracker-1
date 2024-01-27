@@ -1,0 +1,45 @@
+.card{
+    background-color: #000000;
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+}
+
+.card__body{
+    padding: 32px;
+}
+
+.card__title,
+.card__list__item__text
+{
+    color: var(--color-text-muted);
+}
+
+.card__title,
+.card__list__item__title
+{
+    font-weight: 600;
+}
+
+.card__title{
+    font-size: 20px;
+    margin-bottom: 30px;
+}
+
+.card__list__item{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 25px;
+}
+
+.card__list__item__text,
+.card__list__item__title
+{
+    font-size: 18px;
+}
+
+.card__list__item__text
+{
+    font-weight: 500;
+}

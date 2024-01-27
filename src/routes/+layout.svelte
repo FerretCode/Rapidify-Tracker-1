@@ -16,7 +16,7 @@
 
 <style>
 	.main{
-		margin-left: var(--sidebar-width);
+		margin-left: var(--sidebar-width, 0px);
 		padding-left: var(--container-inline-padding, 0px);
 		padding-right: var(--container-inline-padding, 0px);
 	}
