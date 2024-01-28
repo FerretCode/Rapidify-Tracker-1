@@ -4,6 +4,7 @@
     import MinusIcon from "$lib/assets/icons/MinusIcon.svelte";
     import DotsIcon from "$lib/assets/icons/DotsIcon.svelte";
     import CloseIcon from "$lib/assets/icons/CloseIcon.svelte";
+    import Modal from "$lib/components/Modal.svelte";
 
     let inventoryData = Array(12).fill().map((_, index) =>{
         if(index % 2){
@@ -127,18 +128,78 @@
         }
     }
 
-    const handleGroupDataRemove = (id)=>[
+    const handleInventoryDataRemove = (id)=>{
+        displayedInventorys = displayedInventorys.filter(item=> item.inventoryId !== id)
+    }
+
+    const handleGroupDataRemove = (id)=>{
         groupData = groupData.filter(item=> item.groupId !== id)
-    ]
+    }
+
+    let showModal = false;
+    const openModal = ()=> {
+        showModal = true;
+    }
+    const closeModal = ()=> {
+        showModal = false;
+    }
 </script>
 
 <svelte:head>
-	<title>Market</title>
-	<meta name="description" content="Market page" />
+	<title>Inventory</title>
+	<meta name="description" content="Inventory page" />
 </svelte:head>
 
 <section class="pt-5 pt-xl-0 pb-5">
     <div class="container-fluid">
+        {#if showModal}
+            <Modal on:close={closeModal}>
+                <form action="#!">
+                    <h3 class="card__title mb-3">Add An Item</h3>
+                    <input class="card__list__item__input text-left fs-lg" type="text" value="Product Name Here" placeholder="Type here" required>
+                    <h3 class="card__title mt-4">Details</h3>
+                    <div class="card__list">
+                        <div class="card__list__item">
+                            <p class="card__list__item__text">Price Paid</p>
+                            <input class="card__list__item__input" type="text" value="£123.45" placeholder="Type here" required>
+                        </div>
+                        <div class="card__list__item">
+                            <p class="card__list__item__text">Size</p>
+                            <input class="card__list__item__input" type="text" value="UK 10.5" placeholder="Type here" required>
+                        </div>
+                        <div class="card__list__item">
+                            <p class="card__list__item__text">Quantity</p>
+                            <input class="card__list__item__input" type="text" value="5" placeholder="Type here" required>
+                        </div>
+                        <div class="card__list__item">
+                            <p class="card__list__item__text">Payment Method</p>
+                            <input class="card__list__item__input" type="text" value="Card" placeholder="Type here" required>
+                        </div>
+                        <div class="card__list__item">
+                            <p class="card__list__item__text">Listed On Marketplaces</p>
+                            <input class="card__list__item__input" type="text" value="True" placeholder="Type here" required>
+                        </div>
+                        <div class="card__list__item">
+                            <p class="card__list__item__text">Listed On Local Market</p>
+                            <input class="card__list__item__input" type="text" value="True" placeholder="Type here" required>
+                        </div>
+                        <div class="card__list__item">
+                            <p class="card__list__item__text">Local Market Price (Required)</p>
+                            <input class="card__list__item__input" type="text" value="True" placeholder="Type here" required>
+                        </div>
+                        <div class="card__list__item">
+                            <p class="card__list__item__text">Date Of Purchase</p>
+                            <input class="card__list__item__input" type="text" value="01/01/2024" placeholder="Type here" required>
+                        </div>
+                        <div class="card__list__item">
+                            <p class="card__list__item__text">SKU / UPC (Optional)</p>
+                            <input class="card__list__item__input" type="text" value="CW1590-001" placeholder="Type here">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn--primary w-100">Add  To Inventory</button>
+                </form>
+            </Modal>
+        {/if}
         <div class="table-responsive">
             <table class="table">
                 <thead>
@@ -159,7 +220,7 @@
                                     </button>
                                 {/if}
                             </div>
-                            <button type="button" class="icon-btn flex-shrink-0">
+                            <button type="button" class="icon-btn flex-shrink-0" on:click={openModal}>
                                 <svelte:component this={PlusIcon} />
                             </button>
                         </th>
@@ -183,7 +244,7 @@
                                 <button type="button" class="icon-btn">
                                     <svelte:component this={DotsIcon} />
                                 </button>
-                                <button type="button" class="icon-btn">
+                                <button type="button" class="icon-btn" on:click={()=> handleInventoryDataRemove(inventory.inventoryId)}>
                                     <svelte:component this={MinusIcon} />
                                 </button>
                             </td>
