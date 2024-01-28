@@ -1,17 +1,45 @@
 <script>
     import SearchIcon from "$lib/assets/icons/SearchIcon.svelte";
+
     let productsData = Array(24).fill().map((_, index) => ({
         productId: index,
         image: '/assets/images/product/product.jpg',
-        title: '5x Ugg Tazz Slipper Chestnut Womens',
+        title: `${index} 5x Ugg Tazz Slipper Chestnut Womens`,
         price: '£123.45 Per Pair',
         sku: 'SKU: 1122553-CHE',
         discordUsername: 'Username Goes Here',
     }));
 
+    let displayedProducts = [...productsData];
+
     let showUsernames = {};
     const handleShowUsername = (productId) => {
         showUsernames[productId] = !showUsernames[productId];
+    }
+
+    let searchbar;
+    let showSearchbar = false;
+    const handleSearchbarShow = ()=>{
+        showSearchbar = true;
+        setTimeout(()=>{
+            searchbar.focus();
+        },0)
+    };
+    const handleSearchbarHide = ()=>{
+        if(searchbar.value.trim() !== ''){
+            showSearchbar = true
+        }else{
+            showSearchbar = false
+        }
+    };
+
+    const handleProductSearch = ()=>{
+        let currentTypedValue = searchbar.value.trim().toLowerCase().replace(/\s/g, '');
+        if(currentTypedValue !== ''){
+            displayedProducts = productsData.filter(item=> item.title.toLowerCase().replace(/\s/g, '').includes(currentTypedValue));
+        }else{
+            displayedProducts = [...productsData];
+        }
     }
 </script>
 
@@ -24,24 +52,27 @@
     <div class="container-fluid">
         <div class="d-flex align-items-center mb-3">
             <h1 class="section-title">Global Marketplace</h1>
-            <div class="search-wrapper search-wrapper--icon-left">
-                <input type="search" class="search-wrapper__input">
-                <button type="button" class="search-wrapper__icon">
-                    <svelte:component this={SearchIcon} />
-                </button>
+            <div class="search-wrapper">
+                {#if showSearchbar}
+                    <input type="search" class="search-wrapper__input" bind:this={searchbar} on:input={handleProductSearch} on:blur={handleSearchbarHide}>
+                {:else}
+                    <button type="button" class="search-wrapper__icon" on:click={handleSearchbarShow}>
+                        <svelte:component this={SearchIcon} />
+                    </button>
+                {/if}
             </div>
         </div>
         <div class="row">
-            {#each productsData as product (product.productId)}
+            {#each displayedProducts as product (product.productId)}
                 <div class="col-xxl-2 col-xl-3 col-md-4 col-sm-6 mt-3">
                     <article class="product-card">
                         <figure class="product-card__figure">
                             <img src={product.image} alt="product" class="product-card__figure__bg" loading="lazy" draggable="false">
                         </figure>
                         <div class="product-card__body">
-                            <h3 class="product-card__text">5x Ugg Tazz Slipper Chestnut Womens</h3>
-                            <p class="product-card__text">£123.45 Per Pair</p>
-                            <p class="product-card__text">SKU: 1122553-CHE</p>
+                            <h3 class="product-card__text">{product.title}</h3>
+                            <p class="product-card__text">{product.price}</p>
+                            <p class="product-card__text">{product.sku}</p>
                             <button type="button" class="btn btn--primary w-100" on:click={() => handleShowUsername(product.productId)}>
                                 {#if showUsernames[product.productId]}
                                     <span>{product.discordUsername}</span>
@@ -52,44 +83,16 @@
                         </div>
                     </article>
                 </div>
+            {:else}
+                <div class="col-12">
+                    <h1 class="text-center mt-4">No data found</h1>
+                </div>
             {/each}
         </div>
     </div>
 </section>
 
 <style>
-    .search-wrapper{
-        --_padding-inline: 8px;
-        position: relative;
-        display: flex;
-        align-items: center;
-        margin: 0 var(--_padding-inline);
-    }
-
-    .search-wrapper__icon,
-    .search-wrapper__input
-    {
-        background-color: transparent;
-    }
-
-    .search-wrapper__icon{
-        color: #B6B6B6;
-        position: absolute;
-        display: inline-block;
-        border: 0;
-        font-size: 17px;
-    }
-
-    .search-wrapper--icon-left .search-wrapper__icon{
-        left: var(--_padding-inline);
-    }
-
-    .search-wrapper__input{
-        padding: 5px var(--_padding-inline);
-        border: 0;
-        border-bottom: 1px solid #ffffff;
-    }
-
     .section-title{
         color: #B6B6B6;
         font-size: 24px;

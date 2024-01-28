@@ -101,6 +101,10 @@ button:not(:disabled){
 	text-align: center;
 }
 
+.text-right{
+	text-align: right;
+}
+
 .btn{
 	display: inline-block;
 	text-align: center;
@@ -142,6 +146,36 @@ button:not(:disabled){
 	border: 0;
 }
 
+.tag-group{
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: 8px;
+}
+
+.tag-btn,
+.tag-btn::before
+{
+	flex-shrink: 0;
+	border-radius: 10rem;
+}
+
+.tag-btn{
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	border: 1px solid #ffffff;
+	padding: 5px 15px;
+}
+
+.tag-btn::before{
+	flex-shrink: 0;
+	content: '';
+	width: 10px;
+	height: 10px;
+	background-color: var(--_tag-color, #ffffff);
+}
+
 .custom-uploader{
 	position: relative;
 	display: block;
@@ -180,6 +214,36 @@ button:not(:disabled){
 .btn-group{
 	display: grid;
 	gap: 15px;
+}
+
+.search-wrapper{
+	--_padding-inline: 8px;
+	position: relative;
+	display: flex;
+	align-items: center;
+	margin: 0 var(--_padding-inline);
+}
+
+.search-wrapper__icon,
+.search-wrapper__input
+{
+	background-color: transparent;
+}
+
+.search-wrapper__icon{
+	color: #B6B6B6;
+	display: inline-block;
+	border: 0;
+	font-size: 17px;
+	padding: 5px;
+}
+
+.search-wrapper__input{
+	display: block;
+	width: 100%;
+	padding: 5px var(--_padding-inline);
+	border: 0;
+	border-bottom: 1px solid #ffffff;
 }
 
 @media (min-width: 576px) {
