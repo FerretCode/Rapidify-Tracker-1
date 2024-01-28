@@ -83,22 +83,24 @@
 	}
 
 	.sidebar{
+		--_padding: 50px;
 		--_gap: 40px;
 		position: fixed;
+		z-index: 999;
 		top: 0;
 		left: 0;
 		bottom: 0;
-		padding: 50px;
+		display: flex;
+		flex-direction: column;
 		transition:
 			box-shadow 0.25s linear,
 			transform 0.25s ease-in-out;
-		z-index: 999;
 	}
 
 	.sidebar__header{
 		text-align: center;
+		padding: var(--_padding) var(--_padding) 0;
 		margin-bottom: var(--_gap);
-		z-index: 1;
 	}
 
 	.sidebar__header .btn-close{
@@ -113,9 +115,12 @@
 	}
 
 	.sidebar__nav{
+		flex-grow: 1;
 		display: flex;
 		flex-direction: column;
 		gap: var(--_gap);
+		padding: 0 var(--_padding) var(--_padding);
+		overflow: auto;
 	}
 
 	.nav__link{
@@ -143,6 +148,7 @@
 	
 	.nav__link__icon{
 		font-size: 22px;
+		flex-shrink: 0;
 	}
 
 	.nav__link__text{

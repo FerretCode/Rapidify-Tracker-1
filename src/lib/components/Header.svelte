@@ -5,14 +5,26 @@
     import userAvatar from '$lib/assets/images/users/user.png';
 
     let menuToggler;
+    let isHeaderActive = false;
+    const handleScroll = () => {
+        const scrollPosition = window.scrollY;
+        const threshold = 50;
+
+        if (scrollPosition > threshold) {
+            isHeaderActive = true;
+        } else {
+            isHeaderActive = false;
+        }
+    };
     onMount(() => {
+        window.addEventListener('scroll', handleScroll);
         menuToggler.addEventListener('click', function(){
             document.querySelector('.sidebar').classList.toggle('show')
         })
     })
 </script>
 
-<header class="header">
+<header class="header" class:active={isHeaderActive}>
     <div class="container-fluid">
         <div class="header__nav">
             <button type="button" class="header__nav__toggle" bind:this={menuToggler}>
@@ -46,6 +58,7 @@
     .header{
         --_padding-block: 10px;
         position: fixed;
+        z-index: 99;
         top: var(--header-offset-top, 0);
         right: 0;
         left: var(--sidebar-width);
@@ -53,6 +66,13 @@
         padding-bottom: var(--_padding-block);
         padding-left: var(--container-inline-padding, 0);
 		padding-right: var(--container-inline-padding, 0);
+        transition: all 0.2s ease-in-out;
+    }
+
+    .header.active{
+        top: 0;
+        background-color: #000000;
+        box-shadow: calc(var(--sidebar-width) * -1) 0 0 #000000;
     }
 
     .header__nav,

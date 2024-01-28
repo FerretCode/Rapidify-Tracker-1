@@ -15,7 +15,8 @@
 }
 
 .card__title,
-.card__list__item__title
+.card__list__item__title,
+.card__list__item__input
 {
     font-weight: 600;
 }
@@ -26,20 +27,64 @@
 }
 
 .card__list__item{
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 10px;
     margin-bottom: 25px;
 }
 
 .card__list__item__text,
-.card__list__item__title
+.card__list__item__title,
+.card__list__item__input
 {
-    font-size: 18px;
+    font-size: 14px;
 }
 
 .card__list__item__text
 {
     font-weight: 500;
+    flex-grow: 1;
+    flex-shrink: 0;
+}
+
+.card__list__item__title,
+.card__list__item__input
+{
+    color: #ffffff;
+    word-break: break-all;
+}
+
+.card__list__item__input{
+    display: block;
+    width: 100%;
+    background-color: transparent;
+    border: 0;
+    caret-color: var(--color-primary);
+}
+
+@media (min-width: 576px) {
+	.card__list__item__text,
+    .card__list__item__title,
+    .card__list__item__input
+    {
+        font-size: 18px;
+    }
+}
+
+@media (min-width: 668px) and (max-width: 1699.98px), (min-width: 1900px) {
+    .card__list__item{
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+    }
+
+    .card__list__item__title,
+    .card__list__item__input
+    {
+        text-align: right;
+    }
+}
+
+@media (max-width: 667.98px) {
+    .card__list__item__text{
+        margin-bottom: 10px;
+    }
 }
