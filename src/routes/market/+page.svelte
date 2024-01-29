@@ -56,7 +56,7 @@
                 {#if showSearchbar}
                     <input type="search" class="search-wrapper__input" bind:this={searchbar} on:input={handleProductSearch} on:blur={handleSearchbarHide}>
                 {:else}
-                    <button type="button" class="search-wrapper__icon" on:click={handleSearchbarShow}>
+                    <button type="button" class="search-wrapper__icon" aria-label="Open search" on:click={handleSearchbarShow}>
                         <svelte:component this={SearchIcon} />
                     </button>
                 {/if}
@@ -67,10 +67,10 @@
                 <div class="col-xxl-2 col-xl-3 col-md-4 col-sm-6 mt-3">
                     <article class="product-card">
                         <figure class="product-card__figure">
-                            <img src={product.image} alt="product" class="product-card__figure__bg" loading="lazy" draggable="false">
+                            <img src={product.image} alt="product" class="product-card__figure__bg" height="105" loading="lazy" draggable="false">
                         </figure>
                         <div class="product-card__body">
-                            <h3 class="product-card__text">{product.title}</h3>
+                            <h2 class="product-card__text">{product.title}</h2>
                             <p class="product-card__text">{product.price}</p>
                             <p class="product-card__text">{product.sku}</p>
                             <button type="button" class="btn btn--primary w-100" on:click={() => handleShowUsername(product.productId)}>
@@ -85,7 +85,7 @@
                 </div>
             {:else}
                 <div class="col-12">
-                    <h1 class="text-center mt-4">No data found</h1>
+                    <h2 class="text-center mt-4">No data found</h2>
                 </div>
             {/each}
         </div>

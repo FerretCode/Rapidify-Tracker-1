@@ -54,15 +54,14 @@
 		sidebar.classList.remove('show')
 	}
 </script>
-<!-- <a href="/sverdle" aria-current={$page.url.pathname.startsWith('/sverdle') ? 'page' : undefined}>Sverdle</a> -->
 
 <aside class="sidebar" bind:this={sidebar}>
 	<div class="sidebar__header">
-		<button type="button" class="btn-close" on:click={handleMenuHideOnClick}>
+		<button type="button" class="btn-close" aria-label="Close menu" on:click={handleMenuHideOnClick}>
 			<svelte:component this={CloseIcon} />
 		</button>
 		<a href="/" class="sidebar__logo" on:click={handleMenuHideOnClick}>
-			<img src={logo} alt="logo">
+			<img src={logo} alt="logo" width="42" height="37">
 		</a>
 	</div>
 	<nav class="sidebar__nav">
