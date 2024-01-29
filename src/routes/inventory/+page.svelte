@@ -154,7 +154,7 @@
     <div class="container-fluid">
         {#if showModal}
             <Modal on:close={closeModal}>
-                <form action="#!">
+                <form action="#!" on:submit={closeModal}>
                     <h3 class="card__title mb-3">Add An Item</h3>
                     <input class="card__list__item__input text-left fs-lg" type="text" value="Product Name Here" placeholder="Type here" required>
                     <h3 class="card__title mt-4">Details</h3>
@@ -196,7 +196,7 @@
                             <input class="card__list__item__input" type="text" value="CW1590-001" placeholder="Type here">
                         </div>
                     </div>
-                    <button type="submit" class="btn btn--primary w-100">Add  To Inventory</button>
+                    <button type="submit" class="btn btn--primary w-100">Add To Inventory</button>
                 </form>
             </Modal>
         {/if}
@@ -216,12 +216,12 @@
                                     {#if showSearchbar}
                                         <input type="search" class="search-wrapper__input" bind:this={searchbar} on:input={handleInventorySearch} on:blur={handleSearchbarHide}>
                                     {:else}
-                                        <button type="button" class="search-wrapper__icon" on:click={handleSearchbarShow}>
+                                        <button type="button" class="search-wrapper__icon" aria-label="Open search" on:click={handleSearchbarShow}>
                                             <svelte:component this={SearchIcon} />
                                         </button>
                                     {/if}
                                 </div>
-                                <button type="button" class="icon-btn flex-shrink-0" on:click={openModal}>
+                                <button type="button" class="icon-btn flex-shrink-0" aria-label="Open modal" on:click={openModal}>
                                     <svelte:component this={PlusIcon} />
                                 </button>
                             </div>
@@ -243,10 +243,10 @@
                             </td>
                             <td>{inventory.lastEdited}</td>
                             <td class="text-right">
-                                <button type="button" class="icon-btn">
+                                <button type="button" class="icon-btn" aria-label="Open options">
                                     <svelte:component this={DotsIcon} />
                                 </button>
-                                <button type="button" class="icon-btn" on:click={()=> handleInventoryDataRemove(inventory.inventoryId)}>
+                                <button type="button" class="icon-btn" aria-label="Remove item" on:click={()=> handleInventoryDataRemove(inventory.inventoryId)}>
                                     <svelte:component this={MinusIcon} />
                                 </button>
                             </td>
@@ -263,7 +263,7 @@
             {#each groupData as group (group.groupId)}
                 <div class="col mt-4">
                     <div class="group-card">
-                        <button type="button" class="btn-close" on:click={()=> handleGroupDataRemove(group.groupId)}>
+                        <button type="button" class="btn-close" aria-label="Remove item" on:click={()=> handleGroupDataRemove(group.groupId)}>
                             <svelte:component this={CloseIcon} />
                         </button>
                         <div class="row align-items-center">

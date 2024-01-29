@@ -42,7 +42,7 @@
 </style>
   
 <div class="backdrop">
-    <button type="button" class="backdrop__btn" on:click={close}>Close</button>
+    <button type="button" class="backdrop__btn" aria-hidden="true" aria-label="Close modal" on:click={close}>Close</button>
     <div class="modal">
         <Card>
             <slot />

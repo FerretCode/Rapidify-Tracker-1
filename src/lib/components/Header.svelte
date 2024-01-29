@@ -27,10 +27,10 @@
 <header class="header" class:active={isHeaderActive}>
     <div class="container-fluid">
         <div class="header__nav">
-            <button type="button" class="header__nav__toggle" bind:this={menuToggler}>
+            <button type="button" class="header__nav__toggle" aria-label="Menu toggle" bind:this={menuToggler}>
                 <svelte:component this={MenuIcon} />
             </button>
-            <button type="button" class="header__nav__notification active">
+            <button type="button" class="header__nav__notification active" aria-label="Notification">
                 <span class="header__nav__notification__icon">
                     <svelte:component this={BellIcon} />
                 </span>
@@ -44,7 +44,7 @@
         </div>
     </div>
 </header>
-<div class="header-gap"></div>
+<div class="header-gap" aria-hidden="true"></div>
 
 <style>
     :global(:root) {
