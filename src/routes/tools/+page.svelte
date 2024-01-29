@@ -11,7 +11,7 @@
 
 <section class="pt-5 pt-xl-0 pb-5">
     <div class="container-fluid">
-        <div class="row align-items-center">
+        <div class="row align-items-center justify-content-center">
             <div class="col-xxl-4 col-xl-6 col-12 mb-4 mb-xl-0">
                 <Card>
                     <h3 class="card__title">Randomise Information</h3>

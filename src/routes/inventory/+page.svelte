@@ -210,19 +210,21 @@
                         <th>Profit</th>
                         <th>Tags</th>
                         <th>Last Edited</th>
-                        <th class="d-flex align-items-center justify-content-end">
-                            <div class="search-wrapper flex-shrink-0">
-                                {#if showSearchbar}
-                                    <input type="search" class="search-wrapper__input" bind:this={searchbar} on:input={handleInventorySearch} on:blur={handleSearchbarHide}>
-                                {:else}
-                                    <button type="button" class="search-wrapper__icon" on:click={handleSearchbarShow}>
-                                        <svelte:component this={SearchIcon} />
-                                    </button>
-                                {/if}
+                        <th>
+                            <div class="d-flex align-items-center justify-content-end">
+                                <div class="search-wrapper flex-shrink-0">
+                                    {#if showSearchbar}
+                                        <input type="search" class="search-wrapper__input" bind:this={searchbar} on:input={handleInventorySearch} on:blur={handleSearchbarHide}>
+                                    {:else}
+                                        <button type="button" class="search-wrapper__icon" on:click={handleSearchbarShow}>
+                                            <svelte:component this={SearchIcon} />
+                                        </button>
+                                    {/if}
+                                </div>
+                                <button type="button" class="icon-btn flex-shrink-0" on:click={openModal}>
+                                    <svelte:component this={PlusIcon} />
+                                </button>
                             </div>
-                            <button type="button" class="icon-btn flex-shrink-0" on:click={openModal}>
-                                <svelte:component this={PlusIcon} />
-                            </button>
                         </th>
                     </tr>
                 </thead>
