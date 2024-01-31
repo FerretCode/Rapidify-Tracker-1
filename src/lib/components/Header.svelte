@@ -5,6 +5,9 @@
     import userAvatar from '$lib/assets/images/users/user.png';
 
     let menuToggler;
+    let notificationToggler;
+    let notificationMenu;
+    let showNotificationMenu = false;
     let isHeaderActive = false;
     const handleScroll = () => {
         const scrollPosition = window.scrollY;
@@ -16,12 +19,22 @@
             isHeaderActive = false;
         }
     };
+
+    const toggleSidebar = ()=>{
+        document.querySelector('.sidebar').classList.toggle('show')
+    };
+
+    const handleClickOutside = (event) => {
+        if (notificationToggler && !notificationToggler.contains(event.target) && notificationMenu && !notificationMenu.contains(event.target)) {
+            showNotificationMenu = false;
+        }
+    };
+
     onMount(() => {
         window.addEventListener('scroll', handleScroll);
-        menuToggler.addEventListener('click', function(){
-            document.querySelector('.sidebar').classList.toggle('show')
-        })
-    })
+        window.addEventListener('click', handleClickOutside);
+        menuToggler.addEventListener('click', toggleSidebar);
+    });
 </script>
 
 <header class="header" class:active={isHeaderActive}>
@@ -30,11 +43,22 @@
             <button type="button" class="header__nav__toggle" aria-label="Menu toggle" bind:this={menuToggler}>
                 <svelte:component this={MenuIcon} />
             </button>
-            <button type="button" class="header__nav__notification active" aria-label="Notification">
-                <span class="header__nav__notification__icon">
-                    <svelte:component this={BellIcon} />
-                </span>
-            </button>
+            <div class="header__nav__dropdown">
+                <button type="button" class="header__nav__notification active" aria-label="Notification" bind:this={notificationToggler} on:click={()=> showNotificationMenu = !showNotificationMenu}>
+                    <span class="header__nav__notification__icon">
+                        <svelte:component this={BellIcon} />
+                    </span>
+                </button>
+                {#if showNotificationMenu}    
+                    <div class="header__nav__dropdown__card" bind:this={notificationMenu}>
+                        <p class="header__nav__dropdown__card__text">23rd Jan 2023</p>
+                        <ul class="header__nav__dropdown__card__list">
+                            <li class="header__nav__dropdown__card__text">Updated Bar Graph Issues</li>
+                            <li class="header__nav__dropdown__card__text">Added Goat Integration</li>
+                        </ul>
+                    </div>
+                {/if}
+            </div>
             <div class="header__nav__account">
                 <figure class="header__nav__account__figure">
                     <img class="header__nav__account__figure__bg" src={userAvatar} alt="user" width="56" height="56" loading="lazy" draggable="false" />
@@ -86,6 +110,50 @@
         gap: 24px;
     }
 
+    .header__nav__dropdown{
+        position: relative;
+        display: inline-block;
+        margin-left: auto;
+    }
+
+    .header__nav__dropdown__card{
+        --_pointer-size: 20px;
+        --_dropdown-color: #000000;
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        transform: translateX(-50%) translateY(var(--_pointer-size));
+        padding: 9px 15px;
+        border-radius: 11px;
+        background-color: var(--_dropdown-color);
+        width: max-content;
+        max-width: 225px;
+    }
+
+    .header__nav__dropdown__card::before{
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%) translateY(-100%);
+        border-width: var(--_pointer-size);
+        border-style: solid;
+        border-color: transparent;
+        border-bottom-color: var(--_dropdown-color);
+        pointer-events: none;
+    }
+
+    .header__nav__dropdown__card__list{
+        padding-left: 12px;
+    }
+
+    .header__nav__dropdown__card__text{
+        color: var(--color-primary);
+        font-size: 12px;
+        font-weight: 400;
+        line-height: 1.6;
+    }
+
     .header__nav__toggle,
     .header__nav__notification
     {
@@ -99,10 +167,6 @@
         background-color: #000000;
         border: 1px solid #333333;
         border-radius: 10px;
-    }
-
-    .header__nav__notification{
-        margin-left: auto;
     }
 
     .header__nav__notification__icon{
