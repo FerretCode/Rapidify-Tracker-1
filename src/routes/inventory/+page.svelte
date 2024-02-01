@@ -232,7 +232,7 @@
                     {#each displayedInventorys as inventory (inventory.inventoryId)}
                         <tr>
                             <td>{inventory.upc}</td>
-                            <td>{inventory.sku}</td>
+                            <td class="white-space-unset">{inventory.sku}</td>
                             <td>{inventory.paidPrice}</td>
                             <td>{inventory.marketPrice}</td>
                             <td>{inventory.profit}</td>
@@ -309,13 +309,16 @@
         color: #D9D9D9;
         text-align: left;
         border-bottom: 1px solid #ffffff;
-        white-space: nowrap;
+    }
+    thead th:last-of-type{
+        min-width: 118px;
     }
     th,
     td{
         font-size: 15px;
         font-weight: 600;
         padding: var(--_padding-block) 5px;
+        white-space: nowrap;
     }
     
     tbody tr:first-child td{

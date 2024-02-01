@@ -22,7 +22,7 @@
 
 @media (min-width: 1200px){
 	:root{
-		--container-inline-padding: 40px;
+		--container-inline-padding: 30px;
 	}
 }
 
@@ -119,8 +119,16 @@ button:not(:disabled){
 	cursor: pointer;
 }
 
+.fw-regular{
+	font-weight: 400;
+}
+
 .w-100{
 	width: 100%;
+}
+
+.h-100{
+	height: 100%;
 }
 
 .text-center{
@@ -210,6 +218,10 @@ button:not(:disabled){
 	background-color: var(--_tag-color, #ffffff);
 }
 
+.white-space-unset{
+	white-space: unset !important;
+}
+
 .custom-uploader{
 	position: relative;
 	display: block;
@@ -282,6 +294,19 @@ button:not(:disabled){
 
 .modal .card{
 	border: 0;
+}
+
+.chart-card .apexcharts-svg{
+	background-color: transparent !important;
+}
+
+.chart-card .apexcharts-canvas{
+	margin: auto;
+}
+
+.chart-card .pie-chart .apexcharts-tooltip.apexcharts-theme-dark{
+  color: #000000;
+  background: #ffffff;
 }
 
 @media (min-width: 576px) {
