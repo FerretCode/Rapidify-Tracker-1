@@ -315,9 +315,9 @@
     }
     th,
     td{
-        font-size: 15px;
+        font-size: 14px;
         font-weight: 600;
-        padding: var(--_padding-block) 5px;
+        padding: var(--_padding-block) 15px;
         white-space: nowrap;
     }
     

@@ -66,7 +66,7 @@
 	</div>
 	<nav class="sidebar__nav">
 		{#each sidebarMenues as menue }
-			<a href={menue.path} class="nav__link" aria-current={$page.url.pathname === menue.path ? 'page' : undefined} on:click={handleMenuHideOnClick}>
+			<a href={menue.path} class="nav__link" aria-current={$page.url.pathname === menue.path ? 'page' : undefined} on:click={handleMenuHideOnClick} data-sveltekit-preload-data="hover">
 				<span class="nav__link__icon">
 					<svelte:component this={menue.icon} />
 				</span>
