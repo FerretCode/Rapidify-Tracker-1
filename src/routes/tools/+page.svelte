@@ -112,7 +112,10 @@
                                     </div>
                                     <div class="card__list__item">
                                         <p class="card__list__item__text">Tax Included</p>
-                                        <input class="card__list__item__input" type="text" value="False" placeholder="Type here" required>
+                                        <select class="card__list__item__input" required>
+                                            <option value="True">True</option>
+                                            <option value="False" selected>False</option>
+                                        </select>
                                     </div>
                                     <div class="card__list__item">
                                         <p class="card__list__item__text">VAT ID (Optional)</p>
