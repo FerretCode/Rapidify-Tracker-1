@@ -211,7 +211,7 @@
                         <th>Tags</th>
                         <th>Last Edited</th>
                         <th>
-                            <div class="d-flex align-items-center justify-content-end">
+                            <div class="d-flex align-items-center justify-content-xl-end">
                                 <div class="search-wrapper flex-shrink-0">
                                     {#if showSearchbar}
                                         <input type="search" class="search-wrapper__input" bind:this={searchbar} on:input={handleInventorySearch} on:blur={handleSearchbarHide}>
@@ -231,29 +231,33 @@
                 <tbody>
                     {#each displayedInventorys as inventory (inventory.inventoryId)}
                         <tr>
-                            <td>{inventory.upc}</td>
-                            <td class="white-space-unset">{inventory.sku}</td>
-                            <td>{inventory.paidPrice}</td>
-                            <td>{inventory.marketPrice}</td>
-                            <td>{inventory.profit}</td>
-                            <td class="tag-group">
-                                {#each inventory.tags as tag, index (index)}
-                                    <span class="tag-btn" style={`--_tag-color: ${tag.color}`}>{tag.name}</span>
-                                {/each}
+                            <td data-th="UPC">{inventory.upc}</td>
+                            <td data-th="SKU" class="white-space-unset">{inventory.sku}</td>
+                            <td data-th="Paid Price">{inventory.paidPrice}</td>
+                            <td data-th="Market Price">{inventory.marketPrice}</td>
+                            <td data-th="Profit">{inventory.profit}</td>
+                            <td data-th="Tags">
+                                <div class="tag-group">
+                                    {#each inventory.tags as tag, index (index)}
+                                        <span class="tag-btn" style={`--_tag-color: ${tag.color}`}>{tag.name}</span>
+                                    {/each}
+                                </div>
                             </td>
-                            <td>{inventory.lastEdited}</td>
-                            <td class="text-right">
-                                <button type="button" class="icon-btn" aria-label="Open options">
-                                    <svelte:component this={DotsIcon} />
-                                </button>
-                                <button type="button" class="icon-btn" aria-label="Remove item" on:click={()=> handleInventoryDataRemove(inventory.inventoryId)}>
-                                    <svelte:component this={MinusIcon} />
-                                </button>
+                            <td data-th="Last Edited">{inventory.lastEdited}</td>
+                            <td data-th="Actions" class="text-right">
+                                <div>
+                                    <button type="button" class="icon-btn" aria-label="Open options">
+                                        <svelte:component this={DotsIcon} />
+                                    </button>
+                                    <button type="button" class="icon-btn" aria-label="Remove item" on:click={()=> handleInventoryDataRemove(inventory.inventoryId)}>
+                                        <svelte:component this={MinusIcon} />
+                                    </button>
+                                </div>
                             </td>
                         </tr>
                     {:else}
                         <tr>
-                            <td colspan="1000" class="text-center"><h3>No data found</h3></td>
+                            <td data-th="Search Result" colspan="1000" class="text-center"><h3>No data found</h3></td>
                         </tr>
                     {/each}
                 </tbody>
@@ -320,10 +324,6 @@
         padding: var(--_padding-block) 15px;
         white-space: nowrap;
     }
-    
-    tbody tr:first-child td{
-        padding-top: calc(var(--_padding-block) * 2);
-    }
 
     .search-wrapper{
         max-width: 80px;
@@ -349,7 +349,9 @@
         position: absolute;
         top: 0;
         left: 0;
-        transform: translate(-50%, -50%);
+        -webkit-transform: translate(-50%, -50%);
+            -ms-transform: translate(-50%, -50%);
+                transform: translate(-50%, -50%);
     }
 
     .group-card__figure,
@@ -390,14 +392,19 @@
 
     .group-card__list{
         position: relative;
+        display: -webkit-box;
+        display: -ms-flexbox;
         display: flex;
-        align-items: center;
+        -webkit-box-align: center;
+            -ms-flex-align: center;
+                align-items: center;
         gap: 10px;
         font-size: 15px;
     }
 
     .group-card__list::before{
-        flex-shrink: 0;
+        -ms-flex-negative: 0;
+            flex-shrink: 0;
         content: '';
         width: 6px;
         height: 6px;
@@ -409,5 +416,36 @@
     }
     .group-card__list.danger::before{
         background-color: #EA0505;
+    }
+
+    @media (max-width: 1199.98px){
+        thead th:not(:last-of-type){
+            display: none;
+        }
+        tbody td{
+            display: -webkit-box;
+            display: -ms-flexbox;
+            display: flex;
+            -webkit-box-orient: vertical;
+            -webkit-box-direction: normal;
+                -ms-flex-direction: column;
+                    flex-direction: column;
+            -webkit-box-align: start;
+                -ms-flex-align: start;
+                    align-items: flex-start;
+            gap: 5px;
+        }
+        tbody td::before{
+            content: attr(data-th) " : ";
+            color: var(--color-primary);
+        }
+        tbody tr:not(:first-of-type) td:first-of-type{
+            border-top: 1px solid #ffffff;
+        }
+    }
+    @media (min-width: 1200px){
+        tbody tr:first-child td{
+            padding-top: calc(var(--_padding-block) * 2);
+        }
     }
 </style>

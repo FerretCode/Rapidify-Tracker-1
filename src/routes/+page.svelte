@@ -359,9 +359,15 @@
 		width: var(--_size);
 		height: var(--_size);
 		font-size: 20px;
+		display: -webkit-inline-box;
+		display: -ms-inline-flexbox;
 		display: inline-flex;
-		align-items: center;
-		justify-content: center;
+		-webkit-box-align: center;
+		    -ms-flex-align: center;
+		        align-items: center;
+		-webkit-box-pack: center;
+		    -ms-flex-pack: center;
+		        justify-content: center;
 		border-radius: 10px;
 		color: #000000;
 		background-color: #E8E8E8;
@@ -417,9 +423,15 @@
 	}
 
 	.badge{
+		display: -webkit-inline-box;
+		display: -ms-inline-flexbox;
 		display: inline-flex;
-		align-items: center;
-		justify-content: center;
+		-webkit-box-align: center;
+		    -ms-flex-align: center;
+		        align-items: center;
+		-webkit-box-pack: center;
+		    -ms-flex-pack: center;
+		        justify-content: center;
 		gap: 6px;
 		padding: 4px 7px;
 		background-color: rgba(255,255,255, 0.25);
