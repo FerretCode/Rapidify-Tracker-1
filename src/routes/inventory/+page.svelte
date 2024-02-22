@@ -169,7 +169,7 @@
                         </div>
                         <div class="card__list__item">
                             <p class="card__list__item__text">Quantity</p>
-                            <input class="card__list__item__input" type="text" value="5" placeholder="Type here" required>
+                            <input class="card__list__item__input" type="number" value="5" placeholder="Type here" required>
                         </div>
                         <div class="card__list__item">
                             <p class="card__list__item__text">Payment Method</p>
@@ -177,19 +177,26 @@
                         </div>
                         <div class="card__list__item">
                             <p class="card__list__item__text">Listed On Marketplaces</p>
-                            <input class="card__list__item__input" type="text" value="True" placeholder="Type here" required>
+                            <select class="card__list__item__input" required>
+                                <option value="True" selected>True</option>
+                                <option value="False">False</option>
+                            </select>
                         </div>
                         <div class="card__list__item">
                             <p class="card__list__item__text">Listed On Local Market</p>
-                            <input class="card__list__item__input" type="text" value="True" placeholder="Type here" required>
+                            <select class="card__list__item__input" required>
+                                <option value="True" selected>True</option>
+                                <option value="False">False</option>
+                            </select>
                         </div>
                         <div class="card__list__item">
                             <p class="card__list__item__text">Local Market Price (Required)</p>
-                            <input class="card__list__item__input" type="text" value="True" placeholder="Type here" required>
+                            <input class="card__list__item__input" type="number" value="5" placeholder="Type here" required>
                         </div>
                         <div class="card__list__item">
                             <p class="card__list__item__text">Date Of Purchase</p>
-                            <input class="card__list__item__input" type="text" value="01/01/2024" placeholder="Type here" required>
+                            <!-- Put value like YYYY-MM-DD format -->
+                            <input class="card__list__item__input" type="date" value="2024-01-01" required>
                         </div>
                         <div class="card__list__item">
                             <p class="card__list__item__text">SKU / UPC (Optional)</p>

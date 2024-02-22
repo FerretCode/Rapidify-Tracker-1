@@ -43,7 +43,7 @@
                             </div>
                             <div class="card__list__item">
                                 <p class="card__list__item__text">Num. Of Randomises</p>
-                                <input class="card__list__item__input" type="text" value="50" placeholder="Type here">
+                                <input class="card__list__item__input" type="number" value="50" placeholder="Type here">
                             </div>
                         </div>
                         <button type="submit" class="btn btn--primary w-100">Randomise</button>
@@ -104,7 +104,7 @@
                                     </div>
                                     <div class="card__list__item">
                                         <p class="card__list__item__text">Quantity</p>
-                                        <input class="card__list__item__input" type="text" value="1" placeholder="Type here" required>
+                                        <input class="card__list__item__input" type="number" value="1" placeholder="Type here" required>
                                     </div>
                                     <div class="card__list__item">
                                         <p class="card__list__item__text">Price Per Item</p>
@@ -119,11 +119,14 @@
                                     </div>
                                     <div class="card__list__item">
                                         <p class="card__list__item__text">VAT ID (Optional)</p>
-                                        <input class="card__list__item__input" type="text" value="False" placeholder="Type here" required>
+                                        <select class="card__list__item__input" required>
+                                            <option value="True">True</option>
+                                            <option value="False" selected>False</option>
+                                        </select>
                                     </div>
                                     <div class="card__list__item">
                                         <p class="card__list__item__text">Invoice Number</p>
-                                        <input class="card__list__item__input" type="text" value="False" placeholder="Type here" required>
+                                        <input class="card__list__item__input" type="text" value="A01F" placeholder="Type here" required>
                                     </div>
                                 </div>
                                 <button type="button" class="btn btn--primary w-100" on:click={()=> showInvoiceGeneratorNextStep = !showInvoiceGeneratorNextStep}>Next Page</button>
