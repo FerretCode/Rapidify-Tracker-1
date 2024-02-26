@@ -1,5 +1,5 @@
-import { json, redirect } from "@sveltejs/kit";
-import { BACKEND_API, ENVIRONMENT } from "$env/static/private";
+import { redirect } from "@sveltejs/kit";
+import { BACKEND_API, ENVIRONMENT } from "$env/dynamic/private";
 import * as https from "https";
 import fetch from "node-fetch";
 import dayjs from "dayjs";
@@ -8,11 +8,11 @@ import dayjs from "dayjs";
 export async function load({ cookies }) {
   const user = await cookies.get("rapidify");
 
-  if (!user) throw redirect(307, `${BACKEND_API}/auth/login`);
+  if (!user) throw redirect(307, `${process.env.BACKEND_API}/auth/login`);
 
   let httpsAgent;
 
-  if (ENVIRONMENT === "dev") {
+  if (process.env.ENVIRONMENT === "dev") {
     httpsAgent = new https.Agent({
       rejectUnauthorized: false,
     });
@@ -36,12 +36,12 @@ export async function load({ cookies }) {
   };
 
   const res = await fetch(
-    `${BACKEND_API}/track/statistics/get?month=${currentDate[0]}&year=${currentDate[1]}`,
+    `${process.env.BACKEND_API}/track/statistics/get?month=${currentDate[0]}&year=${currentDate[1]}`,
     fetchOptions
   );
 
   const lastMonthRes = await fetch(
-    `${BACKEND_API}/track/statistics/get?month=${lastMonthDate[0]}&year=${lastMonthDate[1]}`,
+    `${process.env.BACKEND_API}/track/statistics/get?month=${lastMonthDate[0]}&year=${lastMonthDate[1]}`,
     fetchOptions
   );
 

@@ -37,7 +37,7 @@
               x: sale,
               y: data.lastMonthStatistics.sales_per_day[sale],
             };
-          }
+          },
         ),
       },
     ],
@@ -162,7 +162,7 @@
 
       let totalSalesChart = new ApexCharts(
         totalSalesChartElement,
-        totalSalesChartOptions
+        totalSalesChartOptions,
       );
       totalSalesChart.render();
 
@@ -183,7 +183,7 @@
 
       let totalPieChart = new ApexCharts(
         totalPieChartElement,
-        totalPieChartOptions
+        totalPieChartOptions,
       );
       totalPieChart.render();
     });

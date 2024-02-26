@@ -1,9 +1,10 @@
 <script>
-    import '$lib/assets/css/_card.css'
+  import "$lib/assets/css/_card.css";
 </script>
 
 <article class="card">
-    <div class="card__body">
-        <slot />
-    </div>
+  <div class="card__body">
+    <slot />
+  </div>
 </article>
+
