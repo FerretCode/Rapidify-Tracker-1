@@ -21,12 +21,24 @@
       {
         name: "This Month",
         color: "#ffffff",
-        data: Object.values(data.statistics.sales_per_day),
+        data: Object.keys(data.statistics.sales_per_day).map((sale) => {
+          return {
+            x: sale,
+            y: data.statistics.sales_per_day[sale],
+          };
+        }),
       },
       {
         name: "Previous Month",
         color: "#FFFFFF30",
-        data: Object.values(data.lastMonthStatistics.sales_per_day),
+        data: Object.keys(data.lastMonthStatistics.sales_per_day).map(
+          (sale) => {
+            return {
+              x: sale,
+              y: data.lastMonthStatistics.sales_per_day[sale],
+            };
+          }
+        ),
       },
     ],
     xaxis: {
