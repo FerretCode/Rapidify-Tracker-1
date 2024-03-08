@@ -14,6 +14,13 @@
   let stockxListed = false;
   let eBayListed = false;
   let proceededClickCount = 0;
+  let itemCount = 0;
+
+  let goatListings = 0;
+  let eBayListings = 0;
+  let stockXListings = 0;
+
+  console.log(itemCount);
 
   function incrementProceededClickCount() {
     proceededClickCount++;
@@ -115,7 +122,7 @@
               tag.name
                 .toLowerCase()
                 .replace(/\s/g, "")
-                .includes(currentTypedValue.toLowerCase()),
+                .includes(currentTypedValue.toLowerCase())
             );
           } else {
             return item[prop]
@@ -133,7 +140,7 @@
 
   const handleInventoryDataRemove = (id) => {
     displayedInventorys = displayedInventorys.filter(
-      (item) => item.inventoryId !== id,
+      (item) => item.inventoryId !== id
     );
   };
 
@@ -159,14 +166,15 @@
   <div class="container-fluid">
     {#if showModal}
       <Modal on:close={closeModal}>
-        <form action="#!" on:submit={closeModal}>
-          {#if proceededClickCount < 1}
+        <form action="?/addItem" method="post">
+          <div class="formPage" class:show={proceededClickCount < 1}>
             <h3 class="card__title mb-3">Add An Item</h3>
             <input
               class="card__list__item__input text-left fs-lg"
               type="text"
               value="Product Name Here"
               placeholder="Type here"
+              name="product_name"
               required
             />
             <h3 class="card__title mt-4">Details</h3>
@@ -184,6 +192,7 @@
                     step="0.01"
                     placeholder="Type here"
                     required
+                    name="price_paid"
                   />
                 </div>
               </div>
@@ -194,6 +203,7 @@
                   type="text"
                   value="UK 10.5"
                   placeholder="Type here"
+                  name="size"
                   required
                 />
               </div>
@@ -202,8 +212,9 @@
                 <input
                   class="card__list__item__input"
                   type="number"
-                  value="5"
+                  bind:value={itemCount}
                   placeholder="Type here"
+                  name="quantity"
                   required
                 />
               </div>
@@ -214,12 +225,17 @@
                   type="text"
                   value="Card"
                   placeholder="Type here"
+                  name="payment_method"
                   required
                 />
               </div>
               <div class="card__list__item">
-                <p class="card__list__item__text">Listed On Marketplaces</p>
-                <select class="card__list__item__input" required>
+                <p class="card__list__item__text">Listed On Marketplace</p>
+                <select
+                  class="card__list__item__input"
+                  name="listed_on_marketplace"
+                  required
+                >
                   <option value="True" selected>True</option>
                   <option value="False">False</option>
                 </select>
@@ -269,6 +285,7 @@
                   value="123.45"
                   step="0.01"
                   placeholder="Type here"
+                  name="local_market_price"
                   required
                 />
               </div>
@@ -279,6 +296,7 @@
                   class="card__list__item__input"
                   type="date"
                   value="2024-01-01"
+                  name="date"
                   required
                 />
               </div>
@@ -288,6 +306,7 @@
                   class="card__list__item__input"
                   type="text"
                   value="CW1590-001"
+                  name="sku"
                   required
                   placeholder="Type here"
                 />
@@ -296,6 +315,7 @@
             {#if goatListed || eBayListed || stockxListed}
               <button
                 on:click={incrementProceededClickCount}
+                type="button"
                 class="btn btn--primary w-100">Proceed to Listings</button
               >
             {:else}
@@ -303,19 +323,29 @@
                 >Add to Inventory</button
               >
             {/if}
-          {:else}
+          </div>
+          <div class="formPage" class:show={proceededClickCount >= 1}>
             <h3 class="card__title mb-3">Add Listings</h3>
             <h3 class="card__title mt-4">Details</h3>
             <div class="card__list">
               {#if goatListed}
                 <div class="card__list__item">
                   <p class="card__list__item__text">Goat</p>
+                  <input
+                    class="card__list__item__input"
+                    type="number"
+                    placeholder="Type here"
+                    max={itemCount - eBayListings - stockXListings}
+                    bind:value={goatListings}
+                    required
+                  />
                   <div>
-                    {#each { length: 3 } as _, i}
+                    {#each { length: goatListings } as _, i}
                       <input
                         class="card__list__item__input"
                         type="text"
                         placeholder="Listing ID"
+                        name="goat[]"
                         required
                       />
                     {/each}
@@ -326,11 +356,20 @@
               {#if stockxListed}
                 <div class="card__list__item">
                   <p class="card__list__item__text">StockX</p>
+                  <input
+                    class="card__list__item__input"
+                    type="number"
+                    placeholder="Type here"
+                    max={itemCount - goatListings - eBayListings}
+                    bind:value={stockXListings}
+                    required
+                  />
                   <div>
-                    {#each { length: 3 } as _, i}
+                    {#each { length: stockXListings } as _, i}
                       <input
                         class="card__list__item__input"
                         type="text"
+                        name="stockx[]"
                         placeholder="Listing ID"
                         required
                       />
@@ -342,8 +381,17 @@
               {#if eBayListed}
                 <div class="card__list__item">
                   <p class="card__list__item__text">eBay</p>
+                  <input
+                    class="card__list__item__input"
+                    type="number"
+                    placeholder="Type here"
+                    name="ebay[]"
+                    max={itemCount - goatListings - stockXListings}
+                    bind:value={eBayListings}
+                    required
+                  />
                   <div>
-                    {#each { length: 3 } as _, i}
+                    {#each { length: eBayListings } as _, i}
                       <input
                         class="card__list__item__input"
                         type="text"
@@ -354,8 +402,11 @@
                   </div>
                 </div>
               {/if}
+              <button type="submit" class="btn btn--primary w-100"
+                >Add to Inventory</button
+              >
             </div>
-          {/if}
+          </div>
         </form>
       </Modal>
     {/if}
@@ -471,7 +522,9 @@
                 <figure class="group-card__figure mx-auto">
                   <img
                     class="group-card__figure__bg"
-                    src={group.image}
+                    src={group.image === ""
+                      ? "https://pub-abf1251d01434e569bdd37c83c30b0af.r2.dev/Logo%20(1).png"
+                      : group.image}
                     alt="Item Image"
                     width="58"
                     height="58"
@@ -651,5 +704,12 @@
     tbody tr:first-child td {
       padding-top: calc(var(--_padding-block) * 2);
     }
+  }
+
+  .formPage {
+    display: none;
+  }
+  .formPage.show {
+    display: block;
   }
 </style>
