@@ -1,5 +1,6 @@
-import { redirect } from "@sveltejs/kit";
-import { BACKEND_API, ENVIRONMENT } from "$env/static/private";
+import { redirect, fail } from "@sveltejs/kit";
+import { ENVIRONMENT } from "$env/static/private";
+import { PUBLIC_BACKEND_API } from "$env/static/public";
 import * as https from "https";
 import fetch from "node-fetch";
 import dayjs from "dayjs";
@@ -8,7 +9,7 @@ import dayjs from "dayjs";
 export async function load({ cookies }) {
   const user = await cookies.get("rapidify");
 
-  if (!user) throw redirect(307, `${BACKEND_API}/auth/login`);
+  if (!user) throw redirect(307, `${PUBLIC_BACKEND_API}/auth/login`);
 
   let httpsAgent;
 
@@ -36,12 +37,12 @@ export async function load({ cookies }) {
   };
 
   const res = await fetch(
-    `${BACKEND_API}/track/statistics/get?month=${currentDate[0]}&year=${currentDate[1]}`,
+    `${PUBLIC_BACKEND_API}/track/statistics/get?month=${currentDate[0]}&year=${currentDate[1]}`,
     fetchOptions
   );
 
   const lastMonthRes = await fetch(
-    `${BACKEND_API}/track/statistics/get?month=${lastMonthDate[0]}&year=${lastMonthDate[1]}`,
+    `${PUBLIC_BACKEND_API}/track/statistics/get?month=${lastMonthDate[0]}&year=${lastMonthDate[1]}`,
     fetchOptions
   );
 
@@ -54,11 +55,11 @@ export async function load({ cookies }) {
   try {
     statistics = JSON.parse(data);
     lastMonthStatistics = JSON.parse(lastMonthData);
+
+    console.log(lastMonthStatistics);
   } catch (err) {
     console.error(`Error occurred parsing data: ${err}\nResponse: ${data}`);
   }
-
-  console.log(statistics);
 
   return {
     statistics,

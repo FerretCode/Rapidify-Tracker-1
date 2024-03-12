@@ -1,5 +1,6 @@
-import { redirect } from "@sveltejs/kit";
-import { BACKEND_API, ENVIRONMENT } from "$env/static/private";
+import { redirect, fail } from "@sveltejs/kit";
+import { ENVIRONMENT } from "$env/static/private";
+import { PUBLIC_BACKEND_API } from "$env/static/public";
 import dayjs from "dayjs";
 import * as https from "https";
 import fetch from "node-fetch";
@@ -10,7 +11,7 @@ export const actions = {
     const user = await cookies.get("rapidify");
     const data = await request.formData();
 
-    if (!user) throw redirect(307, `${process.env.BACKEND_API}/auth/login`);
+    if (!user) return fail(403);
 
     let httpsAgent;
 
@@ -26,6 +27,8 @@ export const actions = {
 
     console.log(data);
 
+    console.log(data.get("image"));
+
     const validationFilters = [
       "product_name",
       "price_paid",
@@ -36,6 +39,7 @@ export const actions = {
       "local_market_price",
       "date",
       "sku",
+      "image",
     ];
 
     const goatListings = [];
@@ -44,7 +48,7 @@ export const actions = {
 
     for (const pair of data) {
       if (validationFilters.includes(pair[0]) && pair[1] === "") {
-        return;
+        return fail(400, { [pair[0]]: undefined, missing: true });
       }
 
       if (pair[0] === "goat[]") goatListings.push(pair[1]);
@@ -52,16 +56,26 @@ export const actions = {
       if (pair[0] === "ebay[]") ebayListings.push(pair[1]);
     }
 
+    const file = data.get("image");
+
+    const buffer = await file.arrayBuffer();
+    const content = Buffer.from(buffer).toString("base64");
+
+    let base64Image = content.split(";base64,").pop();
+
     const fetchOptions = {
       agent: httpsAgent,
       method: "POST",
       body: JSON.stringify({
         name: data.get("product_name"),
+        item_name: data.get("product_name"),
         count: parseInt(data.get("quantity")),
         market_price: parseFloat(data.get("local_market_price")),
+        public: data.get("listed_on_marketplace") === "True" ? true : false,
         price: parseFloat(data.get("price_paid")),
         sizes: [data.get("size")],
         payment_method: data.get("payment_method"),
+        image: base64Image,
         date_of_purchase: `${dayjs(data.get("date")).unix()}`,
         sku: data.get("sku"),
         listings: [
@@ -102,23 +116,16 @@ export const actions = {
       },
     };
 
-    console.log(JSON.parse(fetchOptions.body));
+    console.log(fetchOptions.body);
 
     const res = await fetch(
-      `${BACKEND_API}/dashboard/inventory/add`,
+      `${PUBLIC_BACKEND_API}/dashboard/inventory/add`,
       fetchOptions
     );
 
-    let dat;
-    const body = await res.text();
-
-    try {
-      dat = JSON.parse(body);
-    } catch (err) {
-      console.error(`Error occurred parsing data: ${err}\nResponse: ${body}`);
+    if (res.status !== 200) {
+      return fail(500);
     }
-
-    console.log(dat);
   },
 };
 
@@ -126,7 +133,7 @@ export const actions = {
 export async function load({ cookies }) {
   const user = await cookies.get("rapidify");
 
-  if (!user) throw redirect(307, `${BACKEND_API}/auth/login`);
+  if (!user) throw redirect(307, `${PUBLIC_BACKEND_API}/auth/login`);
 
   let httpsAgent;
 
@@ -140,7 +147,7 @@ export async function load({ cookies }) {
     });
   }
 
-  const res = await fetch(`${BACKEND_API}/dashboard/inventory/list`, {
+  const res = await fetch(`${PUBLIC_BACKEND_API}/dashboard/inventory/list`, {
     agent: httpsAgent,
     headers: {
       Cookie: `rapidify=${cookies.get("rapidify")}`,
@@ -156,31 +163,8 @@ export async function load({ cookies }) {
     console.error(`Error occurred parsing data: ${err}\nResponse: ${data}`);
   }
 
-  /*
-    [
-      {
-        id: 'd0dc0a9f-0d14-4c72-8693-eb8c779616a8',
-        user_id: 'ba93c89d-a7f7-4ddb-bc31-d6ad2c7f90c4',
-        sizes: [ 'xl', 'sm', 'xsm' ],
-        date_of_purchase: '1706113756',
-        payment_method: 'card',
-        listings: [ '09f14d7c-7c8a-4e4b-bc4e-fbdc5c16a72b' ],
-        item_name: '',
-        image: '/CW1590-100.jpg',
-        invoice: '',
-        name: 'Nike Dunk Low Black White GS',
-        sku: 'CW1590-100',
-        price: 600,
-        public: true,
-        sold: false,
-        count: 8
-      }
-    ]
-  */
-
-  console.log(items);
-
   return {
     inventory: items,
+    PUBLIC_BACKEND_API,
   };
 }

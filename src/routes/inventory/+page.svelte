@@ -9,6 +9,8 @@
   import CloseIcon from "$lib/assets/icons/CloseIcon.svelte";
   import Modal from "$lib/components/Modal.svelte";
 
+  const PUBLIC_BACKEND_API = data.PUBLIC_BACKEND_API;
+
   let goatListed = false;
   let lacedListed = false;
   let stockxListed = false;
@@ -27,60 +29,74 @@
   }
 
   let inventoryData = [];
+  let itemData;
 
-  const itemData = data.inventory.map((i, index) => {
-    const item = i.group;
-    const listings = i.listings;
+  if (data.inventory)
+    itemData = data.inventory.map((i, index) => {
+      const item = i.group;
+      const listings = i.listings;
 
-    return i.items
-      .map((i, index) => {
-        return {
-          inventoryId: item.id + "_" + index,
-          upc: item.name,
-          sku: item.sku,
-          paidPrice: "£" + item.price,
-          marketPrice: "£" + item.market_price,
-          profit: `£${item.price - item.market_price}`,
-          lastEdited: "22/01/2024",
-          tags: [
-            ...listings.map((listing) => {
-              return {
-                color: "#FFF",
-                name:
-                  listing.platform.charAt(0).toUpperCase() +
-                  listing.platform.slice(1),
-              };
-            }),
-            ...item.sizes.map((size) => {
-              return {
-                color: "#FFF",
-                name: size.toUpperCase(),
-              };
-            }),
-            {
-              color: "#63FFAB",
-              name: item.public ? "Public" : "Private",
-            },
-            {
-              color: "#FF0000",
-              name: item.count + " in group",
-            },
-          ],
-        };
-      })
-      .flat();
-  });
+      return i.items
+        .map((i, index) => {
+          return {
+            inventoryId: item.id + "_" + index,
+            upc: item.name,
+            sku: item.sku,
+            paidPrice: "£" + item.price,
+            marketPrice: "£" + item.market_price,
+            profit: `£${item.price - item.market_price}`,
+            lastEdited: "22/01/2024",
+            tags: [
+              ...listings
+                .filter(
+                  (listing, index) =>
+                    listings.findIndex(
+                      (l) => l.platform === listing.platform
+                    ) === index
+                )
+                .map((listing) => {
+                  return {
+                    color: "#FFF",
+                    name:
+                      listing.platform.charAt(0).toUpperCase() +
+                      listing.platform.slice(1),
+                  };
+                }),
+              ...item.sizes.map((size) => {
+                return {
+                  color: "#FFF",
+                  name: size.toUpperCase(),
+                };
+              }),
+              {
+                color: "#63FFAB",
+                name: item.public ? "Public" : "Private",
+              },
+              {
+                color: "#FF0000",
+                name: item.count + " in group",
+              },
+            ],
+          };
+        })
+        .flat();
+    });
+  else itemData = [];
 
   inventoryData = itemData.flat();
 
-  let groupData = data.inventory.map((item, index) => ({
-    groupId: item.id,
-    image: item.group.image,
-    title: item.group.name,
-    itemsNumber: item.group.count + " items",
-    positiveCount: item.num_sales,
-    negativeCount: item.group.count,
-  }));
+  let groupData;
+
+  if (data.inventory)
+    groupData = data.inventory.map((item, index) => ({
+      groupId: item.group.id,
+      image: item.group.image,
+      title: item.group.name,
+      itemsNumber: item.group.count + " items",
+      positiveCount: item.num_sales,
+      negativeCount: item.group.count,
+    }));
+  else groupData = [];
 
   let searchbar;
   let showSearchbar = false;
@@ -138,18 +154,90 @@
     }
   };
 
-  const handleInventoryDataRemove = (id) => {
+  function getCookie(cname) {
+    let name = cname + "=";
+    let decodedCookie = decodeURIComponent(document.cookie);
+    let ca = decodedCookie.split(";");
+    for (let i = 0; i < ca.length; i++) {
+      let c = ca[i];
+      while (c.charAt(0) == " ") {
+        c = c.substring(1);
+      }
+      if (c.indexOf(name) == 0) {
+        return c.substring(name.length, c.length);
+      }
+    }
+    return "";
+  }
+
+  const handleInventoryDataRemove = async (id) => {
+    let item;
+    let res = await fetch(
+      `${PUBLIC_BACKEND_API}/dashboard/inventory/get?item_id=${id}`,
+      {
+        headers: {
+          Cookie: "rapidify=" + getCookie("rapidify"),
+        },
+      }
+    );
+
+    const itemResponse = await res.text();
+
+    try {
+      item = JSON.parse(itemResponse);
+    } catch (err) {
+      console.log(err);
+
+      alert("There was an error removing the item. Please try again later.");
+
+      return;
+    }
+
+    res = await fetch(`${PUBLIC_BACKEND_API}/dashboard/inventory/edit`, {
+      method: "POST",
+      body: JSON.stringify({
+        item_id: id,
+        count: item.count - 1,
+      }),
+      headers: {
+        Cookie: "rapidify=" + getCookie("rapidify"),
+      },
+    });
+
+    if (res.status !== 200) {
+      alert("There was an error removing the item. Please try again later.");
+
+      return;
+    }
+
     displayedInventorys = displayedInventorys.filter(
       (item) => item.inventoryId !== id
     );
   };
 
-  const handleGroupDataRemove = (id) => {
+  const handleGroupDataRemove = async (id) => {
+    const res = await fetch(
+      `${PUBLIC_BACKEND_API}/dashboard/inventory/remove`,
+      {
+        method: "POST",
+        body: JSON.stringify({
+          item_id: id,
+        }),
+      }
+    );
+
+    if (res.status !== 200) {
+      alert("There was an error removing the group. Please try again later.");
+
+      return;
+    }
+
     groupData = groupData.filter((item) => item.groupId !== id);
   };
 
   let showModal = false;
   const openModal = () => {
+    console.log("opening");
     showModal = true;
   };
   const closeModal = () => {
@@ -166,7 +254,7 @@
   <div class="container-fluid">
     {#if showModal}
       <Modal on:close={closeModal}>
-        <form action="?/addItem" method="post">
+        <form action="?/addItem" method="post" enctype="multipart/form-data">
           <div class="formPage" class:show={proceededClickCount < 1}>
             <h3 class="card__title mb-3">Add An Item</h3>
             <input
@@ -180,7 +268,7 @@
             <h3 class="card__title mt-4">Details</h3>
             <div class="card__list">
               <div class="card__list__item">
-                <p class="card__list__item__text">Price Paid</p>
+                <p class="card__list__item__text">Item Price</p>
                 <div
                   style="display: flex; align-items: center; max-width: 95px;"
                 >
@@ -311,6 +399,17 @@
                   placeholder="Type here"
                 />
               </div>
+              <div class="card__list__item">
+                <p class="card__list__item__text">Image</p>
+                <input
+                  class="card__list__item__input"
+                  type="file"
+                  name="image"
+                  accept="image/jpg"
+                  required
+                  placeholder="Type here"
+                />
+              </div>
             </div>
             {#if goatListed || eBayListed || stockxListed}
               <button
@@ -336,6 +435,7 @@
                     type="number"
                     placeholder="Type here"
                     max={itemCount - eBayListings - stockXListings}
+                    min="0"
                     bind:value={goatListings}
                     required
                   />
@@ -361,6 +461,7 @@
                     type="number"
                     placeholder="Type here"
                     max={itemCount - goatListings - eBayListings}
+                    min="0"
                     bind:value={stockXListings}
                     required
                   />
@@ -387,6 +488,7 @@
                     placeholder="Type here"
                     name="ebay[]"
                     max={itemCount - goatListings - stockXListings}
+                    min="0"
                     bind:value={eBayListings}
                     required
                   />
@@ -471,16 +573,9 @@
                   {/each}
                 </div>
               </td>
-              <td data-th="Last Edited">{inventory.lastEdited}</td>
+              <td data-th="Last Edited">N/A</td>
               <td data-th="Actions" class="text-right">
                 <div>
-                  <button
-                    type="button"
-                    class="icon-btn"
-                    aria-label="Open options"
-                  >
-                    <svelte:component this={DotsIcon} />
-                  </button>
                   <button
                     type="button"
                     class="icon-btn"

@@ -12,6 +12,17 @@
   import ArrowUpIcon from "$lib/assets/icons/ArrowUpIcon.svelte";
   import expensesChart from "$lib/assets/images/charts/expenses-chart.png";
   import revenueChart from "$lib/assets/images/charts/revenue-chart.png";
+  import TradeDownIcon from "../lib/assets/icons/chart-icon/TradeDownIcon.svelte";
+  import TradeNeutralIcon from "../lib/assets/icons/chart-icon/TradeNeutralIcon.svelte";
+
+  function getIncrease(starting, ending) {
+    console.log(starting, ending);
+
+    if (starting === 0 && ending === 0) return 0;
+    else if (starting === 0 && ending !== 0) return ending > 0 ? 100 : -100;
+
+    return ((ending - starting) / starting) * 100;
+  }
 
   let graphSelect;
 
@@ -37,7 +48,7 @@
               x: sale,
               y: data.lastMonthStatistics.sales_per_day[sale],
             };
-          },
+          }
         ),
       },
     ],
@@ -132,9 +143,9 @@
 
   let totalPieChartElement;
   let totalPieChartOptions = {
-    series: [600, 800, 500],
-    labels: ["StockX", "eBay", "Other"],
-    colors: ["#322FC8", "#E73F76", "#39056C"],
+    series: [Object.values(data.statistics.sales_per_platform)],
+    labels: [Object.keys(data.statistics.sales_per_platform)],
+    colors: ["#322FC8", "#E73F76", "#39056C", "#34ebab", "#c734d1"],
     chart: {
       height: 380,
       type: "pie",
@@ -162,9 +173,12 @@
 
       let totalSalesChart = new ApexCharts(
         totalSalesChartElement,
-        totalSalesChartOptions,
+        totalSalesChartOptions
       );
       totalSalesChart.render();
+
+      totalSalesChart.showSeries("This Month");
+      totalSalesChart.hideSeries("Previous Month");
 
       graphSelect.addEventListener("change", (e) => {
         e.preventDefault();
@@ -175,15 +189,13 @@
 
         const selected = options.filter((target) => target.selected)[0].value;
 
-        console.log(toToggle);
-
-        totalSalesChart.toggleSeries(toToggle);
-        totalSalesChart.toggleSeries(selected);
+        totalSalesChart.hideSeries(toToggle);
+        totalSalesChart.showSeries(selected);
       });
 
       let totalPieChart = new ApexCharts(
         totalPieChartElement,
-        totalPieChartOptions,
+        totalPieChartOptions
       );
       totalPieChart.render();
     });
@@ -204,13 +216,25 @@
             class="d-flex flex-wrap align-items-center justify-content-between"
           >
             <div class="pe-2">
-              <p class="chart-card__large-text mb-1">Total Sales</p>
+              <p class="chart-card__large-text mb-1">Monthly Sales</p>
               <h2>
                 £{data.statistics.revenue}
-                <span class="chart-card__regular-text success fw-regular"
-                  ><span class="inline-icon me-1"
-                    ><svelte:component this={TradeUpIcon} /></span
-                  > 13.02%</span
+                <span class="chart-card__regular-text fw-regular"
+                  ><span class="inline-icon me-1">
+                    {#if getIncrease(data.lastMonthStatistics.revenue, data.statistics.revenue) > 0}
+                      <svelte:component this={TradeUpIcon} />
+                    {:else if getIncrease(data.lastMonthStatistics.revenue, data.statistics.revenue) === 0}
+                      <svelte:component this={TradeNeutralIcon} />
+                    {:else}
+                      <svelte:component this={TradeDownIcon} />
+                    {/if}
+                  </span>
+                  <span class="bg-red-700"
+                    >{getIncrease(
+                      data.lastMonthStatistics.revenue,
+                      data.statistics.revenue
+                    )}% from last month</span
+                  ></span
                 >
               </h2>
             </div>
@@ -228,10 +252,14 @@
         <div class="row">
           <div class="col-xxl-6 mb-4">
             <div class="chart-card d-flex h-100">
-              <div
-                class="pie-chart m-auto"
-                bind:this={totalPieChartElement}
-              ></div>
+              {#if data.statistics.revenue > 0}
+                <div
+                  class="pie-chart m-auto"
+                  bind:this={totalPieChartElement}
+                ></div>
+              {:else}
+                <div class="pie-chart m-auto">No Sales This Month</div>
+              {/if}
             </div>
           </div>
           <div class="col-xxl-6 mb-4">
@@ -245,7 +273,10 @@
                         {data.statistics.num_sales}
                       </h3>
                       <p class="chart-card__regular-text success mt-1">
-                        + 12% from last year
+                        {getIncrease(
+                          data.lastMonthStatistics.num_sales,
+                          data.statistics.num_sales
+                        )}% from last month
                       </p>
                     </div>
                   </div>
@@ -258,7 +289,10 @@
                         {data.statistics.total_expenses}
                       </h3>
                       <p class="chart-card__regular-text danger mt-1">
-                        + 14% from last month
+                        {getIncrease(
+                          data.lastMonthStatistics.expenses,
+                          data.statistics.expenses
+                        )}% from last month
                       </p>
                     </div>
                     <img
@@ -280,7 +314,17 @@
                         {data.statistics.total_sales}
                       </h3>
                       <span class="badge">
-                        15% <svelte:component this={ArrowDownIcon} />
+                        {#if getIncrease(data.lastMonthStatistics.revenue, data.statistics.revenue) > 0}
+                          <svelte:component this={ArrowUpIcon} />
+                        {:else if getIncrease(data.lastMonthStatistics.revenue, data.statistics.revenue) === 0}
+                          <svelte:component this={TradeNeutralIcon} />
+                        {:else}
+                          <svelte:component this={ArrowDownIcon} />
+                        {/if}
+                        {getIncrease(
+                          data.lastMonthStatistics.revenue,
+                          data.statistics.revenue
+                        )}%
                       </span>
                     </div>
                     <img
@@ -302,7 +346,17 @@
                         class="d-flex align-items-center justify-content-between"
                       >
                         <span class="badge">
-                          12% <svelte:component this={ArrowUpIcon} />
+                          {#if getIncrease(data.lastMonthStatistics.net_profit, data.statistics.net_profit) > 0}
+                            <svelte:component this={ArrowUpIcon} />
+                          {:else if getIncrease(data.lastMonthStatistics.net_profit, data.statistics.net_profit) === 0}
+                            <svelte:component this={TradeNeutralIcon} />
+                          {:else}
+                            <svelte:component this={ArrowDownIcon} />
+                          {/if}
+                          {getIncrease(
+                            data.lastMonthStatistics.revenue,
+                            data.statistics.revenue
+                          )}%
                         </span>
                         <span class="chart-icon">
                           <svelte:component this={ChartIcon} />
@@ -328,10 +382,20 @@
                 {data.statistics.total_inventory}
               </h2>
               <p class="chart-card__small-text">
-                <span class="success"
-                  ><span class="inline-icon me-1"
-                    ><svelte:component this={TradeUpIcon} /></span
-                  > 13.02%</span
+                <span class=""
+                  ><span class="inline-icon me-1">
+                    {#if getIncrease(data.lastMonthStatistics.monthly_inventory, data.statistics.monthly_inventory) > 0}
+                      <svelte:component this={ArrowUpIcon} />
+                    {:else if getIncrease(data.lastMonthStatistics.monthly_inventory, data.statistics.monthly_inventory) === 0}
+                      <svelte:component this={TradeNeutralIcon} />
+                    {:else}
+                      <svelte:component this={ArrowDownIcon} />
+                    {/if}</span
+                  >
+                  {getIncrease(
+                    data.lastMonthStatistics.monthly_inventory,
+                    data.statistics.monthly_inventory
+                  )}%</span
                 > Last Month
               </p>
             </div>
@@ -346,10 +410,20 @@
                 {data.statistics.num_sales}
               </h2>
               <p class="chart-card__small-text">
-                <span class="success"
-                  ><span class="inline-icon me-1"
-                    ><svelte:component this={TradeUpIcon} /></span
-                  > 13.02%</span
+                <span class=""
+                  ><span class="inline-icon me-1">
+                    {#if getIncrease(data.lastMonthStatistics.num_sales, data.statistics.num_sales) > 0}
+                      <svelte:component this={ArrowUpIcon} />
+                    {:else if getIncrease(data.lastMonthStatistics.num_sales, data.statistics.num_sales) === 0}
+                      <svelte:component this={TradeNeutralIcon} />
+                    {:else}
+                      <svelte:component this={ArrowDownIcon} />
+                    {/if}</span
+                  >
+                  {getIncrease(
+                    data.lastMonthStatistics.num_sales,
+                    data.statistics.num_sales
+                  )}%</span
                 > Last Month
               </p>
             </div>
@@ -364,11 +438,21 @@
                 £{data.statistics.inventory_value}
               </h2>
               <p class="chart-card__small-text">
-                <span class="success"
-                  ><span class="inline-icon me-1"
-                    ><svelte:component this={TradeUpIcon} /></span
-                  > 13.02%</span
-                > From May
+                <span class=""
+                  ><span class="inline-icon me-1">
+                    {#if getIncrease(data.lastMonthStatistics.inventory_value, data.statistics.inventory_value) > 0}
+                      <svelte:component this={ArrowUpIcon} />
+                    {:else if getIncrease(data.lastMonthStatistics.inventory_value, data.statistics.inventory_value) === 0}
+                      <svelte:component this={TradeNeutralIcon} />
+                    {:else}
+                      <svelte:component this={ArrowDownIcon} />
+                    {/if}</span
+                  >
+                  {getIncrease(
+                    data.lastMonthStatistics.inventory_value,
+                    data.statistics.inventory_value
+                  )}</span
+                > Last Month
               </p>
             </div>
           </div>
@@ -380,11 +464,21 @@
               <p class="chart-card__regular-text mt-3">Revenue</p>
               <h2 class="chart-card__title my-2">£{data.statistics.revenue}</h2>
               <p class="chart-card__small-text">
-                <span class="success"
-                  ><span class="inline-icon me-1"
-                    ><svelte:component this={TradeUpIcon} /></span
-                  > 13.02%</span
-                > From May
+                <span class=""
+                  ><span class="inline-icon me-1">
+                    {#if getIncrease(data.lastMonthStatistics.revenue, data.statistics.revenue) > 0}
+                      <svelte:component this={ArrowUpIcon} />
+                    {:else if getIncrease(data.lastMonthStatistics.revenue, data.statistics.revenue) === 0}
+                      <svelte:component this={TradeNeutralIcon} />
+                    {:else}
+                      <svelte:component this={ArrowDownIcon} />
+                    {/if}</span
+                  >
+                  {getIncrease(
+                    data.lastMonthStatistics.revenue,
+                    data.statistics.revenue
+                  )}%</span
+                > Last Month
               </p>
             </div>
           </div>
@@ -398,11 +492,21 @@
                 £{data.statistics.gross_profit}
               </h2>
               <p class="chart-card__small-text">
-                <span class="success"
+                <span class=""
                   ><span class="inline-icon me-1"
-                    ><svelte:component this={TradeUpIcon} /></span
-                  > 13.02%</span
-                > From May
+                    >{#if getIncrease(data.lastMonthStatistics.gross_profit, data.statistics.gross_profit) > 0}
+                      <svelte:component this={ArrowUpIcon} />
+                    {:else if getIncrease(data.lastMonthStatistics.gross_profit, data.statistics.gross_profit) === 0}
+                      <svelte:component this={TradeNeutralIcon} />
+                    {:else}
+                      <svelte:component this={ArrowDownIcon} />
+                    {/if}</span
+                  >
+                  {getIncrease(
+                    data.lastMonthStatistics.gross_profit,
+                    data.statistics.gross_profit
+                  )}%</span
+                > Last Month
               </p>
             </div>
           </div>
@@ -416,11 +520,21 @@
                 £{data.statistics.net_profit}
               </h2>
               <p class="chart-card__small-text">
-                <span class="success"
+                <span class=""
                   ><span class="inline-icon me-1"
-                    ><svelte:component this={TradeUpIcon} /></span
-                  > 13.02%</span
-                > From May
+                    >{#if getIncrease(data.lastMonthStatistics.net_profit, data.statistics.net_profit) > 0}
+                      <svelte:component this={ArrowUpIcon} />
+                    {:else if getIncrease(data.lastMonthStatistics.net_profit, data.statistics.net_profit) === 0}
+                      <svelte:component this={TradeNeutralIcon} />
+                    {:else}
+                      <svelte:component this={ArrowDownIcon} />
+                    {/if}</span
+                  >
+                  {getIncrease(
+                    data.lastMonthStatistics.net_profit,
+                    data.statistics.net_profit
+                  )}%</span
+                > Last Month
               </p>
             </div>
           </div>
@@ -434,11 +548,21 @@
                 £{data.statistics.total_sales}
               </h2>
               <p class="chart-card__small-text">
-                <span class="success"
+                <span class=""
                   ><span class="inline-icon me-1"
-                    ><svelte:component this={TradeUpIcon} /></span
-                  > 13.02%</span
-                > From May
+                    >{#if getIncrease(data.lastMonthStatistics.revenue, data.statistics.revenue) > 0}
+                      <svelte:component this={ArrowUpIcon} />
+                    {:else if getIncrease(data.lastMonthStatistics.revenue, data.statistics.revenue) === 0}
+                      <svelte:component this={TradeNeutralIcon} />
+                    {:else}
+                      <svelte:component this={ArrowDownIcon} />
+                    {/if}</span
+                  >
+                  {getIncrease(
+                    data.lastMonthStatistics.revenue,
+                    data.statistics.revenue
+                  )}%</span
+                > Last Month
               </p>
             </div>
           </div>
@@ -452,11 +576,21 @@
                 £{data.statistics.total_expenses}
               </h2>
               <p class="chart-card__small-text">
-                <span class="danger"
+                <span class=""
                   ><span class="inline-icon me-1"
-                    ><svelte:component this={TradeUpIcon} /></span
-                  > 13.02%</span
-                > From May
+                    >{#if getIncrease(data.lastMonthStatistics.expenses, data.statistics.expenses) > 0}
+                      <svelte:component this={ArrowUpIcon} />
+                    {:else if getIncrease(data.lastMonthStatistics.expenses, data.statistics.expenses) === 0}
+                      <svelte:component this={TradeNeutralIcon} />
+                    {:else}
+                      <svelte:component this={ArrowDownIcon} />
+                    {/if}</span
+                  >
+                  {getIncrease(
+                    data.lastMonthStatistics.expenses,
+                    data.statistics.expenses
+                  )}%</span
+                > Last Month
               </p>
             </div>
           </div>
