@@ -42,8 +42,8 @@
             inventoryId: item.id + "_" + index,
             upc: item.name,
             sku: item.sku,
-            paidPrice: "£" + item.price,
-            marketPrice: "£" + item.market_price,
+            paidPrice: "£" + item.market_price,
+            marketPrice: "£" + item.price,
             profit: `£${item.price - item.market_price}`,
             lastEdited: "22/01/2024",
             tags: [
@@ -62,12 +62,14 @@
                       listing.platform.slice(1),
                   };
                 }),
-              ...item.sizes.map((size) => {
-                return {
-                  color: "#FFF",
-                  name: size.toUpperCase(),
-                };
-              }),
+              item.sizes
+                ? item.sizes.map((size) => {
+                    return {
+                      color: "#FFF",
+                      name: size.toUpperCase(),
+                    };
+                  })
+                : undefined,
               {
                 color: "#63FFAB",
                 name: item.public ? "Public" : "Private",
@@ -76,7 +78,13 @@
                 color: "#FF0000",
                 name: item.count + " in group",
               },
-            ],
+            ]
+              .filter((tag) => tag !== undefined)
+              .map((tag) => {
+                if (Array.isArray(tag)) tag = tag[0];
+
+                return tag;
+              }),
           };
         })
         .flat();
@@ -399,6 +407,7 @@
                   placeholder="Type here"
                 />
               </div>
+              <!--
               <div class="card__list__item">
                 <p class="card__list__item__text">Image</p>
                 <input
@@ -410,6 +419,7 @@
                   placeholder="Type here"
                 />
               </div>
+            -->
             </div>
             {#if goatListed || eBayListed || stockxListed}
               <button
@@ -517,8 +527,8 @@
         <thead>
           <tr>
             <th colspan="2">NAME / SKU</th>
-            <th>Paid Price</th>
-            <th>Market Price</th>
+            <th>Listed Price</th>
+            <th>Price Paid</th>
             <th>Profit</th>
             <th>Tags</th>
             <th>Last Edited</th>
@@ -561,8 +571,8 @@
             <tr>
               <td data-th="UPC">{inventory.upc}</td>
               <td data-th="SKU" class="white-space-unset">{inventory.sku}</td>
-              <td data-th="Paid Price">{inventory.paidPrice}</td>
-              <td data-th="Market Price">{inventory.marketPrice}</td>
+              <td data-th="Paid Price">{inventory.marketPrice}</td>
+              <td data-th="Market Price">{inventory.paidPrice}</td>
               <td data-th="Profit">{inventory.profit}</td>
               <td data-th="Tags">
                 <div class="tag-group">
@@ -617,9 +627,8 @@
                 <figure class="group-card__figure mx-auto">
                   <img
                     class="group-card__figure__bg"
-                    src={group.image === ""
-                      ? "https://pub-abf1251d01434e569bdd37c83c30b0af.r2.dev/Logo%20(1).png"
-                      : group.image}
+                    src={"https://secure-images.nike.com/is/image/DotCom/" +
+                      group.sku}
                     alt="Item Image"
                     width="58"
                     height="58"

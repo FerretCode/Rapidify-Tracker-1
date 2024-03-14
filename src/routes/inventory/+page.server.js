@@ -39,7 +39,7 @@ export const actions = {
       "local_market_price",
       "date",
       "sku",
-      "image",
+      // "image",
     ];
 
     const goatListings = [];
@@ -56,12 +56,14 @@ export const actions = {
       if (pair[0] === "ebay[]") ebayListings.push(pair[1]);
     }
 
+    /*
     const file = data.get("image");
 
     const buffer = await file.arrayBuffer();
     const content = Buffer.from(buffer).toString("base64");
 
     let base64Image = content.split(";base64,").pop();
+    */
 
     const fetchOptions = {
       agent: httpsAgent,
@@ -115,8 +117,6 @@ export const actions = {
         Cookie: `rapidify=${cookies.get("rapidify")}`,
       },
     };
-
-    console.log(fetchOptions.body);
 
     const res = await fetch(
       `${PUBLIC_BACKEND_API}/dashboard/inventory/add`,

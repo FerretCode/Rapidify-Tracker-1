@@ -6,7 +6,7 @@
   let productsData = data.inventory.map((item) => ({
     productId: item.id,
     image: item.image,
-    title: `5x Ugg Tazz Slipper Chestnut Womens`,
+    title: item.name,
     price: `£${item.price} Per Pair`,
     sku: `SKU/Style: ${item.sku}`,
     discordUsername: "Username Goes Here",
@@ -86,7 +86,8 @@
           <article class="product-card">
             <figure class="product-card__figure">
               <img
-                src={product.image}
+                src={"https://secure-images.nike.com/is/image/DotCom/" +
+                  product.sku}
                 alt="product"
                 class="product-card__figure__bg"
                 height="105"
